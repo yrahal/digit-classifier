@@ -36,17 +36,17 @@ if __name__ == "__main__":
     layers = [784, 30, 10]
     learning_rate = 0.01
     mini_batch_size = 16
-    epochs = 5
+    epochs = 100
 
     # Initialize train, val and test data
     train_data, val_data, test_data = load_mnist()
 
     nn = NeuralNetwork(layers, learning_rate, mini_batch_size, "relu")
-    nn.fit(train_data, val_data, epochs)
+    
+    with open(os.path.join(os.getenv("P4D_INPUT"),'model.pkl'), 'rb') as handle:
+        o = pickle.load(handle)
+        nn.weights = o["w"]
+        nn.biases = o["b"]
 
     accuracy = nn.validate(test_data) / 100.0
     print(f"Test Accuracy: {accuracy}%.")
-
-    #nn.save()
-    with open(os.path.join(os.getenv("P4D_OUTPUT"),'model.pkl'), 'wb') as handle:
-        pickle.dump({"w": nn.weights, "b": nn.biases }, handle, protocol=pickle.HIGHEST_PROTOCOL)
